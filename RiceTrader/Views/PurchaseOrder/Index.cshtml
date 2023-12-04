@@ -1,0 +1,49 @@
+﻿@model List<RiceTrader.Models.PurchaseOrder>
+
+@{
+    ViewData["Title"] = "Purchase Orders";
+}
+
+<h2>Purchase Orders</h2>
+
+@foreach (var purchaseOrder in Model)
+{
+    <h4>Purchase Order: @purchaseOrder.PoId</h4>
+    <p>Order Date: @purchaseOrder.OrderDate</p>
+    <p>Total Price: @purchaseOrder.TotalPrice</p>
+    <p>Currency: @purchaseOrder.Currency</p>
+
+    <h5>Final Orders:</h5>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Supplier ID</th>
+                <th>Supplier Name</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Packaging</th>
+                <th>Quantity</th>
+                <th>Per Item Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var finalOrder in purchaseOrder.FinalOrders)
+            {
+                <tr>
+                    <td>@finalOrder.FinalOrderId</td>
+                    <td>@finalOrder.VendorId</td>
+                    <td>@finalOrder.VendorName</td>
+                    <td>@finalOrder.ProductId</td>
+                    <td>@finalOrder.ProductName</td>
+                    <td>@finalOrder.ProductSize</td>
+                    <td>@finalOrder.Quantity</td>
+                    <td>@finalOrder.Price @finalOrder.Currency</td>
+                </tr>
+            }
+            
+        </tbody>
+    </table>
+    <button class="invoice-btn" type="button">Generate Invoice</button>
+    <hr />
+}

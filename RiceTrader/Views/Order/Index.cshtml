@@ -1,0 +1,86 @@
+﻿@model List<RiceTrader.Models.Order>
+
+@{
+    ViewData["Title"] = "Order Queue";
+    int? editingOrderId = (int?)ViewData["EditingOrderId"];
+    decimal totalPrice = Model.Sum(order => order.Price * order.Quantity);
+}
+
+<h2>Order Queue</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Vendor ID</th>
+            <th>Vendor Name</th>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th>Product Size</th>
+            <th>Price</th>
+            <th>Currency</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.VendorId</td>
+                <td>@order.VendorName</td>
+                <td>@order.ProductId</td>
+                <td>@order.ProductName</td>
+                <td>@order.ProductSize</td>
+                <td>@order.Price</td>
+                <td>@order.Currency</td>
+                @if (editingOrderId == order.OrderId)
+                {
+                        @Html.TextBoxFor(modelItem => order.Quantity, new { form = "editForm", @class = "form-control", type = "number" })
+                    <td>
+                        <input type="number" value="@order.Quantity" form="editForm" name="newQuantity" />
+                    </td>
+                    <td>
+                        <form id="editForm" asp-action="UpdateQuantity" asp-controller="Order" method="post">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <input type="submit" value="Update Quantity" />
+                        </form>
+                    </td>
+                }
+                else
+                {
+                    <td>@order.Quantity</td>
+                    <td>@(order.Price * order.Quantity)</td>
+                    <td>
+                        <form asp-action="EditQuantity" asp-controller="Order" method="get">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <input type="submit" value="Edit Quantity" />
+                        </form>
+                        <!-- Delete form here -->
+                    </td>
+                }
+                <td>
+                  
+
+                    
+                    <form asp-action="DeleteOrder" asp-controller="Order" method="post">
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        <input type="submit" value="Delete Order" />
+                    </form>
+                </td>
+            </tr>
+        }
+
+        <tr>
+            <td colspan="8" style="text-align: right;"><strong>Total Price:</strong></td>
+            <td><strong>@totalPrice</strong></td>
+            <td>
+                <form asp-action="SendOrder" asp-controller="Order" method="post">
+                    <input type="submit" value="Send Order" />
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
